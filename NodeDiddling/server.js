@@ -7,6 +7,23 @@ var mimeTypes = {
     ".css": "text/css"
 };
 var cache = {
+    store: {
+    },
+    maxSize: 26214400,
+    maxAge: 5400 * 1000,
+    cleanAfter: 7200 * 1000,
+    cleanedAt: 0,
+    clean: function (now) {
+        var self = this;
+        if(now - self.cleanedAt > self.cleanedAfter) {
+            self.cleanedAt = now;
+            Object.keys(self.store).forEach(function (file) {
+                if(now > self.store[file].timestamp + self.maxAge) {
+                    delete self.store[file];
+                }
+            });
+        }
+    }
 };
 http.createServer(function (request, response) {
     var lookup = path.basename(decodeURI(request.url)) || "index.html";
@@ -31,19 +48,23 @@ http.createServer(function (request, response) {
                 response.end("Server error");
             });
             fs.stat(f, function (err, stats) {
-                var bufferOffset = 0;
-                cache[f] = {
-                    content: new Buffer(stats.size)
-                };
-                s.on("data", function (chunk) {
-                    chunk.copy(cache[f].content, bufferOffset);
-                    bufferOffset += chunk.length;
-                });
+                if(stats.size < cache.maxSize) {
+                    var bufferOffset = 0;
+                    cache[f] = {
+                        content: new Buffer(stats.size),
+                        timestamp: Date.now()
+                    };
+                    s.on("data", function (chunk) {
+                        chunk.copy(cache[f].content, bufferOffset);
+                        bufferOffset += chunk.length;
+                    });
+                }
             });
             return;
         }
         response.writeHead(404);
         response.end();
     });
+    cache.clean(Date.now());
 }).listen(8080);
 
