@@ -60,6 +60,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="content\index.html" />
+    <Content Include="content\script.js">
+      <DependentUpon>script.ts</DependentUpon>
+    </Content>
+    <Content Include="content\script.min.js">
+      <DependentUpon>script.ts</DependentUpon>
+    </Content>
+    <Content Include="content\script.ts" />
+    <Content Include="content\styles.css" />
     <Content Include="node.d.ts" />
     <Content Include="server.js">
       <DependentUpon>server.ts</DependentUpon>
