@@ -9,41 +9,34 @@ var mimeTypes = {
     ".css": "text/css"
 };
 var cache = {};
-function cacheAndDeliver(f: string, cb: (err: Error, data: NodeBuffer) => void ) {
-    fs.stat(f, function (err, stats) {
-        var lastChanged = stats.mtime;
-        var isUpdated = (cache[f]) && lastChanged > cache[f].timestamp;
-        if (!cache[f] || isUpdated) {
-            fs.readFile(f, function (err, data) {
-                if (!err) {
-                    cache[f] = {
-                        content: data,
-                        timestamp: Date.now()
-                    };
-                }
-                cb(err, data);
-            });
-            return;
-        }
-        console.log("loading " + f + " from cache");
-        cb(null, cache[f].content);
-    });
-}
 
 http.createServer(function (request, response) {
     var lookup = path.basename(decodeURI(request.url)) || "index.html";
     var f = "content/" + lookup;
     fs.exists(f, function (exists) {
         if (exists) {
-            cacheAndDeliver(f, function (err, data) {
-                if (err) {
-                    response.writeHead(500);
-                    response.end("Server error!");
-                    return;
-                }
-                var headers = { "Content-type": mimeTypes[path.extname(lookup)] };
+            var headers = { "Content-type": mimeTypes[path.extname(lookup)] };
+            if (cache[f]) {
                 response.writeHead(200, headers);
-                response.end(data);
+                response.end(cache[f].content);
+            }
+            var s = fs.createReadStream(f);
+            s.once("open", function () {
+                response.writeHead(200, headers);
+                this.pipe(response);
+            });
+            s.once("error", function (e) {
+                console.log(e);
+                response.writeHead(500);
+                response.end("Server error");
+            });
+            fs.stat(f, function (err, stats) {
+                var bufferOffset = 0;
+                cache[f] = { content: new Buffer(stats.size) };
+                s.on("data", function (chunk) {
+                    chunk.copy(cache[f].content, bufferOffset);
+                    bufferOffset += chunk.length;
+                });
             });
             return;
         }
