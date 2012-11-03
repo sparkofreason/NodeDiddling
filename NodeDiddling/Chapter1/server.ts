@@ -1,4 +1,4 @@
-﻿///<reference path='node.d.ts'/>
+﻿///<reference path='../node.d.ts'/>
 import http = module("http");
 import path = module("path");
 import fs = module("fs");
