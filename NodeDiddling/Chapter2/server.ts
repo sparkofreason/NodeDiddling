@@ -16,6 +16,8 @@ http.createServer(function (request, response) {
                     return;
                 }
                 response.write(file.name + " received\n");
+            }).on("field", function(field, value) {
+                response.write(field + ":" + value + "\n");
             }).on("end", function () {
                 response.end("All files received");
             });
