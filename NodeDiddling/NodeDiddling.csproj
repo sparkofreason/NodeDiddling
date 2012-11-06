@@ -69,7 +69,21 @@
     </Content>
     <Content Include="Chapter1\content\script.ts" />
     <Content Include="Chapter1\content\styles.css" />
+    <Content Include="Chapter2\fetch.js">
+      <DependentUpon>fetch.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter2\fetch.min.js">
+      <DependentUpon>fetch.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter2\fetch.ts" />
     <Content Include="Chapter2\form.html" />
+    <Content Include="Chapter2\post.js">
+      <DependentUpon>post.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter2\post.min.js">
+      <DependentUpon>post.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter2\post.ts" />
     <Content Include="Chapter2\server.js">
       <DependentUpon>server.ts</DependentUpon>
     </Content>
@@ -77,6 +91,15 @@
       <DependentUpon>server.ts</DependentUpon>
     </Content>
     <Content Include="Chapter2\server.ts" />
+    <Content Include="Chapter5\client.html" />
+    <Content Include="Chapter5\server.js">
+      <DependentUpon>server.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter5\server.min.js">
+      <DependentUpon>server.ts</DependentUpon>
+    </Content>
+    <Content Include="Chapter5\server.ts" />
+    <Content Include="express2.d.ts" />
     <Content Include="node.d.ts" />
     <Content Include="Chapter1\server.js">
       <DependentUpon>server.ts</DependentUpon>

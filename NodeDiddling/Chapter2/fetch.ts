@@ -1,7 +1,7 @@
 ﻿///<reference path='../node.d.ts'/>
 import http = module("http");
 import url = module("url");
-var urlOpts = { host: "www.nodejs.org", path:"/", port: 80};
+var urlOpts;
 if (process.argv[2]) {
     if (!process.argv[2].match("http://")) {
         process.argv[2] = "http://" + process.argv[2];
